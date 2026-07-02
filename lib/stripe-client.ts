@@ -9,8 +9,20 @@ export function getStripe() {
   return stripePromise;
 }
 
+export const stripeElementsFonts = [
+  {
+    family: "Inter",
+    src: "url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2)",
+    weight: "400",
+  },
+  {
+    family: "Inter",
+    src: "url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYAZ9hiA.woff2)",
+    weight: "600",
+  },
+];
+
 export const stripeAppearance = {
-  theme: "stripe" as const,
   variables: {
     colorPrimary: "#175650",
     colorBackground: "#ffffff",
@@ -18,7 +30,7 @@ export const stripeAppearance = {
     colorTextSecondary: "#5b5748",
     colorTextPlaceholder: "#8a8574",
     colorDanger: "#c0362c",
-    fontFamily: "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+    fontFamily: "Inter, ui-sans-serif",
     borderRadius: "12px",
     spacingUnit: "4px",
   },

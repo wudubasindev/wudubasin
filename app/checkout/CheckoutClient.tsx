@@ -3,12 +3,11 @@
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Elements,
+  CheckoutElementsProvider,
   PaymentElement,
-  useElements,
-  useStripe,
-} from "@stripe/react-stripe-js";
-import { getStripe, stripeAppearance } from "@/lib/stripe-client";
+  useCheckoutElements,
+} from "@stripe/react-stripe-js/checkout";
+import { getStripe, stripeAppearance, stripeElementsFonts } from "@/lib/stripe-client";
 import { siteConfig } from "@/lib/site-config";
 
 type StoredCheckout = {
@@ -17,29 +16,25 @@ type StoredCheckout = {
 };
 
 function PaymentForm({ name }: { name: string }) {
-  const stripe = useStripe();
-  const elements = useElements();
+  const result = useCheckoutElements();
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "paying" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!stripe || !elements) return;
+    if (result.type !== "success") return;
 
     setStatus("paying");
     setErrorMessage(null);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/booking-confirmed`,
-      },
+    const confirmResult = await result.checkout.confirm({
+      returnUrl: `${window.location.origin}/booking-confirmed`,
     });
 
-    if (error) {
+    if (confirmResult.type === "error") {
       setStatus("error");
-      setErrorMessage(error.message || "Payment failed. Please try again.");
+      setErrorMessage(confirmResult.error.message || "Payment failed. Please try again.");
       return;
     }
 
@@ -55,7 +50,7 @@ function PaymentForm({ name }: { name: string }) {
         <p className="text-base font-medium text-ink-900">{name}</p>
       </div>
 
-      <PaymentElement />
+      <PaymentElement options={{ wallets: { link: "never" } }} />
 
       {status === "error" && errorMessage && (
         <p className="text-sm text-red-600">{errorMessage}</p>
@@ -63,7 +58,7 @@ function PaymentForm({ name }: { name: string }) {
 
       <button
         type="submit"
-        disabled={!stripe || isBusy}
+        disabled={result.type !== "success" || isBusy}
         className="w-full rounded-full bg-basin-700 px-6 py-3 text-sm font-semibold text-sand-50 transition-colors hover:bg-basin-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isBusy ? "Processing…" : `Pay ${siteConfig.depositAmount} Deposit`}
@@ -102,11 +97,9 @@ export function CheckoutClient() {
     getStoredCheckoutSnapshot,
     getServerCheckoutSnapshot,
   );
-  const isServer = typeof window === "undefined";
   const checkout = parseStoredCheckout(raw);
-  const loadError = !isServer && !checkout;
 
-  if (loadError) {
+  if (!checkout) {
     return (
       <div className="mx-auto max-w-lg px-6 py-24 text-center">
         <h1 className="text-2xl font-semibold text-ink-900">
@@ -125,18 +118,13 @@ export function CheckoutClient() {
     );
   }
 
-  if (!checkout) {
-    return (
-      <div className="mx-auto max-w-lg px-6 py-24 text-center text-ink-600">
-        Loading secure checkout…
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-lg px-6 py-16 sm:py-24">
       <div className="mb-8 text-center">
-        <h1 className="font-display text-3xl font-semibold text-ink-900">
+        <h1
+          className="text-3xl font-semibold text-ink-900"
+          style={{ fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif" }}
+        >
           Secure Checkout
         </h1>
         <p className="mt-2 text-sm text-ink-600">
@@ -146,12 +134,18 @@ export function CheckoutClient() {
       </div>
 
       <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm sm:p-8">
-        <Elements
+        <CheckoutElementsProvider
           stripe={getStripe()}
-          options={{ clientSecret: checkout.clientSecret, appearance: stripeAppearance }}
+          options={{
+            clientSecret: checkout.clientSecret,
+            elementsOptions: {
+              appearance: stripeAppearance,
+              fonts: stripeElementsFonts,
+            },
+          }}
         >
           <PaymentForm name={checkout.name} />
-        </Elements>
+        </CheckoutElementsProvider>
       </div>
 
       <p className="mt-6 text-center text-xs text-ink-400">

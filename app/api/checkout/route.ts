@@ -32,17 +32,19 @@ export async function POST(request: Request) {
 
   try {
     const stripe = new Stripe(secretKey);
-    const price = await stripe.prices.retrieve(depositPriceId);
+    const origin = new URL(request.url).origin;
 
-    if (!price.unit_amount || !price.currency) {
-      throw new Error("Deposit price is missing a fixed amount.");
-    }
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: price.unit_amount,
-      currency: price.currency,
+    const session = await stripe.checkout.sessions.create({
+      ui_mode: "elements",
+      mode: "payment",
       payment_method_types: ["card"],
-      receipt_email: body.email,
+      customer_email: body.email,
+      line_items: [
+        {
+          price: depositPriceId,
+          quantity: 1,
+        },
+      ],
       metadata: {
         name: body.name,
         phone: body.phone,
@@ -50,13 +52,14 @@ export async function POST(request: Request) {
         preferredDate: body.preferredDate || "",
         bookingId: body.bookingId ? String(body.bookingId) : "",
       },
+      return_url: `${origin}/booking-confirmed`,
     });
 
-    if (!paymentIntent.client_secret) {
+    if (!session.client_secret) {
       throw new Error("Stripe did not return a client secret.");
     }
 
-    return NextResponse.json({ ok: true, clientSecret: paymentIntent.client_secret });
+    return NextResponse.json({ ok: true, clientSecret: session.client_secret });
   } catch (err) {
     console.error("Stripe checkout error:", err);
     return NextResponse.json(
