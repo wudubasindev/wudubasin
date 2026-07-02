@@ -1,4 +1,4 @@
-import { DropletIcon } from "./icons";
+import { ProductCarousel } from "./ProductCarousel";
 
 const specs = [
   { label: "Material", value: "Ceramic, glossy polished finish" },
@@ -46,14 +46,7 @@ export function ProductSpecs() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl border border-sand-200 bg-gradient-to-br from-basin-50 via-sand-50 to-sage-100 shadow-sm">
-              <span className="flex h-24 w-24 items-center justify-center rounded-full bg-white/80 text-basin-700 shadow-sm">
-                <DropletIcon className="h-11 w-11" />
-              </span>
-              <span className="absolute bottom-6 rounded-full bg-white/90 px-4 py-1.5 text-xs font-medium text-ink-600">
-                Product photo placeholder
-              </span>
-            </div>
+            <ProductCarousel />
           </div>
         </div>
       </div>

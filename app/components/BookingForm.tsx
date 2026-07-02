@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { siteConfig } from "@/lib/site-config";
 
 type Status = "idle" | "saving" | "redirecting" | "error";
@@ -16,6 +17,7 @@ const buttonLabel: Record<Status, string> = {
 };
 
 export function BookingForm() {
+  const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -55,11 +57,15 @@ export function BookingForm() {
       });
       const checkoutData = await checkoutRes.json();
 
-      if (!checkoutRes.ok || !checkoutData.url) {
+      if (!checkoutRes.ok || !checkoutData.clientSecret) {
         throw new Error(checkoutData.error || "Could not start checkout. Please try again.");
       }
 
-      window.location.href = checkoutData.url;
+      sessionStorage.setItem(
+        "wudubasin_checkout",
+        JSON.stringify({ clientSecret: checkoutData.clientSecret, name: payload.name }),
+      );
+      router.push("/checkout");
     } catch (err) {
       setStatus("error");
       setErrorMessage(
