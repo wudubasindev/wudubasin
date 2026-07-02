@@ -23,14 +23,18 @@ export async function POST(request: Request) {
   try {
     const supabase = createSupabaseServerClient();
 
-    const { error } = await supabase.from("bookings").insert({
-      name: body.name,
-      phone: body.phone,
-      email: body.email,
-      address: body.address,
-      preferred_date: body.preferredDate || null,
-      message: body.message || null,
-    });
+    const { data, error } = await supabase
+      .from("bookings")
+      .insert({
+        name: body.name,
+        phone: body.phone,
+        email: body.email,
+        address: body.address,
+        preferred_date: body.preferredDate || null,
+        message: body.message || null,
+      })
+      .select("id")
+      .single();
 
     if (error) {
       console.error("Failed to save booking:", error);
@@ -40,7 +44,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, id: data.id });
   } catch (err) {
     console.error("Booking route error:", err);
     return NextResponse.json(

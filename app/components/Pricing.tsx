@@ -1,5 +1,4 @@
 import { CheckCircleIcon } from "./icons";
-import { DepositButton } from "./DepositButton";
 import { siteConfig } from "@/lib/site-config";
 
 const included = [
@@ -60,12 +59,17 @@ export function Pricing() {
           </ul>
 
           <div className="mt-10 flex justify-center">
-            <DepositButton />
+            <a
+              href="#book"
+              className="rounded-full bg-basin-700 px-7 py-3.5 text-sm font-semibold text-sand-50 shadow-sm shadow-basin-900/10 transition-colors hover:bg-basin-800"
+            >
+              Book Your Installation — {siteConfig.depositAmount} Deposit
+            </a>
           </div>
 
           <p className="mt-4 text-center text-xs text-ink-400">
-            Your deposit secures your installation date and is credited
-            toward your total price.
+            You&apos;ll share a few details about your install before paying.
+            Your deposit is credited toward your total price.
           </p>
         </div>
       </div>

@@ -1,11 +1,19 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { siteConfig } from "@/lib/site-config";
 
-type Status = "idle" | "submitting" | "success" | "error";
+type Status = "idle" | "saving" | "redirecting" | "error";
 
 const inputClasses =
   "w-full rounded-xl border border-sand-300 bg-white px-4 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-basin-500 focus:outline-none focus:ring-2 focus:ring-basin-200";
+
+const buttonLabel: Record<Status, string> = {
+  idle: `Continue to ${siteConfig.depositAmount} Deposit`,
+  saving: "Saving your details…",
+  redirecting: "Redirecting to secure checkout…",
+  error: `Continue to ${siteConfig.depositAmount} Deposit`,
+};
 
 export function BookingForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -13,7 +21,6 @@ export function BookingForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("submitting");
     setErrorMessage(null);
 
     const form = event.currentTarget;
@@ -28,39 +35,40 @@ export function BookingForm() {
     };
 
     try {
-      const res = await fetch("/api/booking", {
+      setStatus("saving");
+      const bookingRes = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
+      const bookingData = await bookingRes.json();
 
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Something went wrong.");
+      if (!bookingRes.ok || !bookingData.ok) {
+        throw new Error(bookingData.error || "Could not save your details. Please try again.");
       }
 
-      setStatus("success");
-      form.reset();
+      setStatus("redirecting");
+      const checkoutRes = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payload, bookingId: bookingData.id }),
+      });
+      const checkoutData = await checkoutRes.json();
+
+      if (!checkoutRes.ok || !checkoutData.url) {
+        throw new Error(checkoutData.error || "Could not start checkout. Please try again.");
+      }
+
+      window.location.href = checkoutData.url;
     } catch (err) {
       setStatus("error");
       setErrorMessage(
-        err instanceof Error ? err.message : "Could not send your request. Please try again.",
+        err instanceof Error ? err.message : "Something went wrong. Please try again.",
       );
     }
   }
 
-  if (status === "success") {
-    return (
-      <div className="rounded-2xl border border-basin-200 bg-basin-50 p-6 text-center">
-        <p className="text-base font-semibold text-basin-800">
-          Thanks — we&apos;ve got your details.
-        </p>
-        <p className="mt-2 text-sm text-basin-700">
-          We&apos;ll reach out shortly to confirm your installation date.
-        </p>
-      </div>
-    );
-  }
+  const isBusy = status === "saving" || status === "redirecting";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,11 +121,16 @@ export function BookingForm() {
 
       <button
         type="submit"
-        disabled={status === "submitting"}
-        className="w-full rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-sand-50 transition-colors hover:bg-ink-900/90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        disabled={isBusy}
+        className="w-full rounded-full bg-basin-700 px-6 py-3 text-sm font-semibold text-sand-50 transition-colors hover:bg-basin-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
-        {status === "submitting" ? "Sending…" : "Request a Callback"}
+        {buttonLabel[status]}
       </button>
+
+      <p className="text-xs text-ink-400">
+        Your name, phone, email, and address are required so we can confirm
+        your installation before you&apos;re taken to secure payment.
+      </p>
     </form>
   );
 }

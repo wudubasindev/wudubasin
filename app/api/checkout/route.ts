@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+type CheckoutPayload = {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  preferredDate?: string;
+  bookingId?: number | string;
+};
+
 export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   const depositPriceId = process.env.STRIPE_DEPOSIT_PRICE_ID;
@@ -12,18 +21,35 @@ export async function POST(request: Request) {
     );
   }
 
+  const body = (await request.json().catch(() => ({}))) as Partial<CheckoutPayload>;
+
+  if (!body.name || !body.phone || !body.email || !body.address) {
+    return NextResponse.json(
+      { ok: false, error: "Please provide your name, phone, email, and address before paying." },
+      { status: 400 },
+    );
+  }
+
   try {
     const stripe = new Stripe(secretKey);
     const origin = new URL(request.url).origin;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      customer_email: body.email,
       line_items: [
         {
           price: depositPriceId,
           quantity: 1,
         },
       ],
+      metadata: {
+        name: body.name,
+        phone: body.phone,
+        address: body.address,
+        preferredDate: body.preferredDate || "",
+        bookingId: body.bookingId ? String(body.bookingId) : "",
+      },
       success_url: `${origin}/booking-confirmed`,
       cancel_url: `${origin}/#book`,
     });
