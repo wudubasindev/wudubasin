@@ -1,0 +1,74 @@
+import { CheckCircleIcon } from "./icons";
+import { DepositButton } from "./DepositButton";
+import { siteConfig } from "@/lib/site-config";
+
+const included = [
+  "Ceramic wudu sink (glossy finish, 12L capacity)",
+  "Delivery to your home, mosque, or school",
+  "Professional floor-mounted installation",
+  "3-year warranty on the fixture",
+];
+
+export function Pricing() {
+  return (
+    <section id="pricing" className="bg-sand-100 py-20 sm:py-24">
+      <div className="mx-auto max-w-3xl px-6">
+        <div className="text-center">
+          <h2 className="text-3xl font-semibold text-ink-900 sm:text-4xl">
+            Simple, transparent pricing
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-ink-600">
+            One package: the sink, delivery, and professional installation.
+          </p>
+        </div>
+
+        <div className="mt-12 rounded-3xl border border-sand-200 bg-white p-8 shadow-sm sm:p-10">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <span className="font-display text-5xl font-semibold text-basin-700">
+              {siteConfig.depositAmount}
+            </span>
+            <span className="text-sm font-medium text-ink-600">
+              deposit, due today, to book your installation
+            </span>
+          </div>
+
+          <div className="my-8 flex items-center gap-3">
+            <div className="h-px flex-1 bg-sand-200" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+              plus
+            </span>
+            <div className="h-px flex-1 bg-sand-200" />
+          </div>
+
+          <div className="flex flex-col items-center gap-1 text-center">
+            {/* TODO: replace with the real total package price once it's finalized */}
+            <span className="font-display text-3xl font-semibold text-ink-900">
+              {siteConfig.totalPricePlaceholder}
+            </span>
+            <span className="text-sm font-medium text-ink-600">
+              remaining balance, due on completion of install
+            </span>
+          </div>
+
+          <ul className="mt-10 space-y-3">
+            {included.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <CheckCircleIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-basin-600" />
+                <span className="text-sm text-ink-600">{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-10 flex justify-center">
+            <DepositButton />
+          </div>
+
+          <p className="mt-4 text-center text-xs text-ink-400">
+            Your deposit secures your installation date and is credited
+            toward your total price.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}

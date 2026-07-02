@@ -69,3 +69,23 @@ insert into public.products (name, description, price, image_url, stock, categor
   ('Leather Wallet', 'Slim bifold leather wallet.', 34.50, 'https://placehold.co/400x400?text=Wallet', 75, 1),
   ('Coffee Mug', 'Ceramic 12oz mug, dishwasher safe.', 12.00, 'https://placehold.co/400x400?text=Mug', 200, 1),
   ('Tote Bag', 'Reusable heavy-duty cotton tote.', 15.99, 'https://placehold.co/400x400?text=Tote', 120, 1);
+
+-- ============================================
+-- WuduBasin.ca booking/lead-gen form
+-- Submissions from the site's booking form (name, phone, email,
+-- address, preferred install date, notes). Written server-side only
+-- via the service role key, so RLS is enabled with no public policies.
+-- ============================================
+
+create table public.bookings (
+  id bigint generated always as identity primary key,
+  name text not null,
+  phone text not null,
+  email text not null,
+  address text not null,
+  preferred_date date,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.bookings enable row level security;

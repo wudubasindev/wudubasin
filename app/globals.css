@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf8f3;
+  --foreground: #292620;
+
+  --sand-50: #faf8f3;
+  --sand-100: #f4eee2;
+  --sand-200: #e9dfc9;
+  --sand-300: #d8c9a8;
+
+  --basin-50: #eaf3f1;
+  --basin-100: #cde4df;
+  --basin-200: #9fc9c1;
+  --basin-400: #4e948b;
+  --basin-600: #1f6b62;
+  --basin-700: #175650;
+  --basin-800: #12403c;
+  --basin-900: #0d2e2b;
+
+  --sage-100: #eaefdd;
+  --sage-300: #c4d2aa;
+  --sage-500: #8fa873;
+
+  --ink-900: #292620;
+  --ink-600: #5b5748;
+  --ink-400: #8a8574;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-sand-50: var(--sand-50);
+  --color-sand-100: var(--sand-100);
+  --color-sand-200: var(--sand-200);
+  --color-sand-300: var(--sand-300);
+
+  --color-basin-50: var(--basin-50);
+  --color-basin-100: var(--basin-100);
+  --color-basin-200: var(--basin-200);
+  --color-basin-400: var(--basin-400);
+  --color-basin-600: var(--basin-600);
+  --color-basin-700: var(--basin-700);
+  --color-basin-800: var(--basin-800);
+  --color-basin-900: var(--basin-900);
+
+  --color-sage-100: var(--sage-100);
+  --color-sage-300: var(--sage-300);
+  --color-sage-500: var(--sage-500);
+
+  --color-ink-900: var(--ink-900);
+  --color-ink-600: var(--ink-600);
+  --color-ink-400: var(--ink-400);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), Georgia, serif;
 }
