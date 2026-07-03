@@ -9,6 +9,13 @@ const links = [
   { href: "#book", label: "Book Now" },
 ];
 
+const legalLinks = [
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/refund-policy", label: "Refund & Cancellation Policy" },
+  { href: "/liability-waiver", label: "Installation Agreement & Liability" },
+];
+
 export function Footer() {
   const year = new Date().getFullYear();
 
@@ -59,8 +66,19 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-sand-200 pt-6 text-xs text-ink-400">
-          © {year} {siteConfig.name}. All rights reserved.
+        <div className="mt-10 flex flex-col gap-4 border-t border-sand-200 pt-6 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            © {year} {siteConfig.name}. All rights reserved.
+          </span>
+          <ul className="flex flex-wrap gap-x-4 gap-y-2">
+            {legalLinks.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} className="hover:text-basin-700">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

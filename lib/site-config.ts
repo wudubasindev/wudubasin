@@ -9,4 +9,11 @@ export const siteConfig = {
   // TODO: confirm the real business contact details before launch.
   contactEmail: "hello@wudubasin.ca",
   contactPhone: "(519) 000-0000",
+  // Legal / regulatory details used across Terms, Privacy, Refund, and Waiver pages.
+  legalName: "Zubayir Bagzat, operating as WuduBasin",
+  businessAddress: "4380 Lismer Lane, London, Ontario",
+  warrantyPeriod: "90 days",
+  cancellationNoticeDays: "5",
+  hasInsurance: false,
+  legalEffectiveDate: "July 3, 2026",
 };
