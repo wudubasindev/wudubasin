@@ -25,9 +25,7 @@ export default async function BookingConfirmedPage({
   const { session_id: sessionId } = await searchParams;
   const paymentStatus = await getPaymentStatus(sessionId);
   const isPaid = paymentStatus === "paid";
-  const isUnverifiable = !sessionId || paymentStatus === null;
-
-  if (!isPaid && !isUnverifiable) {
+    if (!isPaid) {
     return (
       <section className="mx-auto flex max-w-xl flex-col items-center px-6 py-24 text-center">
         <h1 className="text-3xl font-semibold text-ink-900">
