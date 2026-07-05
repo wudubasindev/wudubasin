@@ -29,7 +29,7 @@ function PaymentForm({ name }: { name: string }) {
     setErrorMessage(null);
 
     const confirmResult = await result.checkout.confirm({
-      returnUrl: `${window.location.origin}/booking-confirmed`,
+      returnUrl: `${window.location.origin}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     if (confirmResult.type === "error") {
@@ -38,7 +38,7 @@ function PaymentForm({ name }: { name: string }) {
       return;
     }
 
-    router.push("/booking-confirmed");
+    router.push(`/booking-confirmed?session_id=${result.checkout.id}`);
   }
 
   const isBusy = status === "paying";

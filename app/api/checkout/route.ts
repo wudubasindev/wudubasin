@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         preferredDate: body.preferredDate || "",
         bookingId: body.bookingId ? String(body.bookingId) : "",
       },
-      return_url: `${origin}/booking-confirmed`,
+      return_url: `${origin}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     if (!session.client_secret) {
