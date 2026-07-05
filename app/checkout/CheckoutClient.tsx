@@ -28,9 +28,7 @@ function PaymentForm({ name }: { name: string }) {
     setStatus("paying");
     setErrorMessage(null);
 
-    const confirmResult = await result.checkout.confirm({
-      returnUrl: `${window.location.origin}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
-    });
+      const confirmResult = await result.checkout.confirm();
 
     if (confirmResult.type === "error") {
       setStatus("error");
