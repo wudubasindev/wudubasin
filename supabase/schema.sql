@@ -85,7 +85,10 @@ create table public.bookings (
   address text not null,
   preferred_date date,
   message text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  stripe_checkout_session_id text,
+  deposit_paid boolean not null default false,
+  deposit_paid_at timestamptz
 );
 
 alter table public.bookings enable row level security;

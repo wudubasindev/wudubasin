@@ -28,9 +28,7 @@ function PaymentForm({ name }: { name: string }) {
     setStatus("paying");
     setErrorMessage(null);
 
-    const confirmResult = await result.checkout.confirm({
-      returnUrl: `${window.location.origin}/booking-confirmed`,
-    });
+      const confirmResult = await result.checkout.confirm();
 
     if (confirmResult.type === "error") {
       setStatus("error");
@@ -38,7 +36,7 @@ function PaymentForm({ name }: { name: string }) {
       return;
     }
 
-    router.push("/booking-confirmed");
+    router.push(`/booking-confirmed?session_id=${result.checkout.id}`);
   }
 
   const isBusy = status === "paying";
