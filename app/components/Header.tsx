@@ -15,7 +15,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-sand-200 bg-sand-50/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link href="#top" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-basin-700 text-sand-50">
             <DropletIcon className="h-4 w-4" />
           </span>

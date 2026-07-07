@@ -23,12 +23,6 @@ const faqs = [
     answer:
       "If you already have a wudu sink and just need professional installation, contact us and we'll quote the install-only service separately.",
   },
-  {
-    question: "What's covered under warranty?",
-    // TODO: confirm whether installation workmanship is separately warrantied.
-    answer:
-      "Every sink comes with a 3-year warranty on the fixture itself, covering manufacturing defects in the ceramic and hardware.",
-  },
 ];
 
 export function FAQ() {

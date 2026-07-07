@@ -8,7 +8,6 @@ const specs = [
   { label: "Installation", value: "Floor-mounted, free-standing pedestal" },
   { label: "Faucet", value: "Single-hole, lever handle" },
   { label: "Included", value: "Drainer" },
-  { label: "Warranty", value: "3 years on the fixture" },
 ];
 
 export function ProductSpecs() {
