@@ -30,10 +30,28 @@ export function Pricing() {
             </span>
           </div>
 
-          <p className="mx-auto mt-6 max-w-sm text-center text-sm text-ink-600">
-            Your final price depends on your site&apos;s setup and will be
-            confirmed in a written quote before any work begins. Your deposit
-            is credited toward that total.
+          <div className="my-8 flex items-center gap-3">
+            <div className="h-px flex-1 bg-sand-200" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+              plus
+            </span>
+            <div className="h-px flex-1 bg-sand-200" />
+          </div>
+
+          <div className="flex flex-col items-center gap-1 text-center">
+            <span className="font-display text-3xl font-semibold text-ink-900">
+              ~{siteConfig.estimatedTotalPrice}
+            </span>
+            <span className="text-sm font-medium text-ink-600">
+              estimated remaining balance, due on completion of install
+            </span>
+          </div>
+
+          <p className="mx-auto mt-4 max-w-sm text-center text-xs text-ink-400">
+            This is a typical estimate, not a fixed price. Your exact total
+            depends on your site&apos;s setup and will be confirmed in a
+            written quote before any work begins. Your deposit is credited
+            toward that total.
           </p>
 
           <ul className="mt-10 space-y-3">

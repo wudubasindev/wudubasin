@@ -20,10 +20,19 @@ export function BookingForm() {
   const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage(null);
+
+    if (!agreedToTerms) {
+      setStatus("error");
+      setErrorMessage(
+        "Please agree to the Terms of Service and related policies before booking.",
+      );
+      return;
+    }
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -34,6 +43,7 @@ export function BookingForm() {
       address: formData.get("address"),
       preferredDate: formData.get("preferredDate"),
       message: formData.get("message"),
+      agreedToTerms,
     };
 
     try {
@@ -121,13 +131,44 @@ export function BookingForm() {
         <textarea id="message" name="message" rows={3} className={inputClasses} />
       </div>
 
+      <div className="flex items-start gap-2.5">
+        <input
+          id="agreedToTerms"
+          name="agreedToTerms"
+          type="checkbox"
+          checked={agreedToTerms}
+          onChange={(event) => setAgreedToTerms(event.target.checked)}
+          required
+          className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-sand-300 text-basin-700 focus:ring-basin-200"
+        />
+        <label htmlFor="agreedToTerms" className="text-sm text-ink-600">
+          I agree to the{" "}
+          <a href="/terms" target="_blank" className="text-basin-700 underline underline-offset-2">
+            Terms of Service
+          </a>
+          ,{" "}
+          <a href="/privacy" target="_blank" className="text-basin-700 underline underline-offset-2">
+            Privacy Policy
+          </a>
+          ,{" "}
+          <a href="/refund-policy" target="_blank" className="text-basin-700 underline underline-offset-2">
+            Refund &amp; Cancellation Policy
+          </a>
+          , and{" "}
+          <a href="/liability-waiver" target="_blank" className="text-basin-700 underline underline-offset-2">
+            Installation Agreement &amp; Liability Waiver
+          </a>
+          .
+        </label>
+      </div>
+
       {status === "error" && errorMessage && (
         <p className="text-sm text-red-600">{errorMessage}</p>
       )}
 
       <button
         type="submit"
-        disabled={isBusy}
+        disabled={isBusy || !agreedToTerms}
         className="w-full rounded-full bg-basin-700 px-6 py-3 text-sm font-semibold text-sand-50 transition-colors hover:bg-basin-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
         {buttonLabel[status]}
