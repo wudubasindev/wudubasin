@@ -8,6 +8,7 @@ type BookingPayload = {
   address: string;
   preferredDate?: string;
   message?: string;
+  agreedToTerms?: boolean;
 };
 
 export async function POST(request: Request) {
@@ -16,6 +17,13 @@ export async function POST(request: Request) {
   if (!body.name || !body.phone || !body.email || !body.address) {
     return NextResponse.json(
       { ok: false, error: "Please fill in your name, phone, email, and address." },
+      { status: 400 },
+    );
+  }
+
+  if (body.agreedToTerms !== true) {
+    return NextResponse.json(
+      { ok: false, error: "Please agree to the Terms of Service and related policies before booking." },
       { status: 400 },
     );
   }
@@ -32,6 +40,7 @@ export async function POST(request: Request) {
         address: body.address,
         preferred_date: body.preferredDate || null,
         message: body.message || null,
+        agreed_to_terms: true,
       })
       .select("id")
       .single();

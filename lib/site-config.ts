@@ -4,8 +4,8 @@ export const siteConfig = {
   serviceArea: "London, Ontario",
   serviceAreaLong: "London, Ontario and the surrounding area",
   depositAmount: "$100",
-  // TODO: replace with the real total package price once it's finalized.
-  totalPricePlaceholder: "[Total Price]",
+  // TODO: replace with a real pricing model once job cost data exists.
+  estimatedTotalPrice: "$1,000",
   // TODO: confirm the real business contact details before launch.
   contactEmail: "hello@wudubasin.ca",
   contactPhone: "(519) 000-0000",

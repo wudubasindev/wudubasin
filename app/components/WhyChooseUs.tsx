@@ -1,7 +1,6 @@
 import {
   BadgeCheckIcon,
   MapPinIcon,
-  ShieldCheckIcon,
   ToolIcon,
   TruckIcon,
   HomeIcon,
@@ -38,11 +37,6 @@ const reasons = [
     title: `Local to ${siteConfig.serviceArea}`,
     description:
       "We're a local service, not a big-box retailer shipping a box and moving on.",
-  },
-  {
-    icon: ShieldCheckIcon,
-    title: "Warranty included",
-    description: "Every install comes with 3 years of coverage on the fixture itself.",
   },
 ];
 

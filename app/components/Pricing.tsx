@@ -5,7 +5,6 @@ const included = [
   "Ceramic wudu sink (glossy finish, 12L capacity)",
   "Delivery to your home, mosque, or school",
   "Professional floor-mounted installation",
-  "3-year warranty on the fixture",
 ];
 
 export function Pricing() {
@@ -40,14 +39,20 @@ export function Pricing() {
           </div>
 
           <div className="flex flex-col items-center gap-1 text-center">
-            {/* TODO: replace with the real total package price once it's finalized */}
             <span className="font-display text-3xl font-semibold text-ink-900">
-              {siteConfig.totalPricePlaceholder}
+              ~{siteConfig.estimatedTotalPrice}
             </span>
             <span className="text-sm font-medium text-ink-600">
-              remaining balance, due on completion of install
+              estimated remaining balance, due on completion of install
             </span>
           </div>
+
+          <p className="mx-auto mt-4 max-w-sm text-center text-xs text-ink-400">
+            This is a typical estimate, not a fixed price. Your exact total
+            depends on your site&apos;s setup and will be confirmed in a
+            written quote before any work begins. Your deposit is credited
+            toward that total.
+          </p>
 
           <ul className="mt-10 space-y-3">
             {included.map((item) => (
@@ -69,7 +74,6 @@ export function Pricing() {
 
           <p className="mt-4 text-center text-xs text-ink-400">
             You&apos;ll share a few details about your install before paying.
-            Your deposit is credited toward your total price.
           </p>
         </div>
       </div>

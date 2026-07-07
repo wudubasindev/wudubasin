@@ -1,10 +1,9 @@
-import { BadgeCheckIcon, MapPinIcon, ShieldCheckIcon, ToolIcon } from "./icons";
+import { BadgeCheckIcon, MapPinIcon, ToolIcon } from "./icons";
 import { siteConfig } from "@/lib/site-config";
 
 const trustPoints = [
   { icon: BadgeCheckIcon, label: "Certified ceramic fixtures" },
   { icon: ToolIcon, label: "Professional installation" },
-  { icon: ShieldCheckIcon, label: "3-year warranty" },
   { icon: MapPinIcon, label: `Based in ${siteConfig.serviceArea}` },
 ];
 
@@ -47,7 +46,7 @@ export function Hero() {
           </a>
         </div>
 
-        <dl className="mt-14 grid w-full max-w-3xl grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
+        <dl className="mt-14 grid w-full max-w-2xl grid-cols-3 gap-x-6 gap-y-6">
           {trustPoints.map(({ icon: Icon, label }) => (
             <div key={label} className="flex flex-col items-center gap-2">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-basin-700 shadow-sm">
