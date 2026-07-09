@@ -1,6 +1,7 @@
 import { Hero } from "./components/Hero";
 import { HowItWorks } from "./components/HowItWorks";
 import { ProductSpecs } from "./components/ProductSpecs";
+import { DesignOptions } from "./components/DesignOptions";
 import { WhyChooseUs } from "./components/WhyChooseUs";
 import { Pricing } from "./components/Pricing";
 import { Gallery } from "./components/Gallery";
@@ -13,6 +14,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <ProductSpecs />
+      <DesignOptions />
       <WhyChooseUs />
       <Pricing />
       <Gallery />
