@@ -1,5 +1,6 @@
 export const siteConfig = {
   name: "WuduBasin.ca",
+  siteUrl: "https://www.wudubasin.ca",
   tagline: "Wudu, done right at home.",
   serviceArea: "London, Ontario",
   serviceAreaLong: "London, Ontario and the surrounding area",
