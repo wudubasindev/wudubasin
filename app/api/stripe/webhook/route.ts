@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { sendBookingConfirmationEmail } from "@/lib/email";
 
 export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -30,17 +31,29 @@ export async function POST(request: Request) {
 
       if (bookingId) {
         const supabase = createSupabaseServerClient();
-        const { error } = await supabase
+        // Only matches rows that aren't already marked paid, so retried webhook
+        // deliveries for the same session don't send a duplicate email.
+        const { data, error } = await supabase
           .from("bookings")
           .update({
             deposit_paid: true,
             deposit_paid_at: new Date().toISOString(),
             stripe_checkout_session_id: session.id,
           })
-          .eq("id", bookingId);
+          .eq("id", bookingId)
+          .eq("deposit_paid", false)
+          .select("name")
+          .maybeSingle();
 
         if (error) {
           console.error("Failed to mark booking as paid:", error);
+        } else if (data) {
+          const email = session.customer_email || session.customer_details?.email;
+          const name = session.metadata?.name || data.name;
+          if (email) {
+            const trackingNumber = `WB-${String(bookingId).padStart(5, "0")}`;
+            await sendBookingConfirmationEmail({ to: email, name, trackingNumber });
+          }
         }
       }
     }
