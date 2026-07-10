@@ -39,7 +39,6 @@ export async function POST(request: Request) {
       mode: "payment",
       payment_method_types: ["card"],
       customer_email: body.email,
-      allow_promotion_codes: true,
       line_items: [
         {
           price: depositPriceId,

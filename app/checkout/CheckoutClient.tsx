@@ -20,34 +20,6 @@ function PaymentForm({ name }: { name: string }) {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "paying" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [promoCode, setPromoCode] = useState("");
-  const [promoStatus, setPromoStatus] = useState<"idle" | "applying" | "applied" | "error">("idle");
-  const [promoError, setPromoError] = useState<string | null>(null);
-
-  async function handleApplyPromoCode() {
-    if (result.type !== "success" || !promoCode.trim()) return;
-
-    setPromoStatus("applying");
-    setPromoError(null);
-
-    const applyResult = await result.checkout.applyPromotionCode(promoCode.trim());
-
-    if (applyResult.type === "error") {
-      setPromoStatus("error");
-      setPromoError(applyResult.error.message || "That code isn't valid.");
-      return;
-    }
-
-    setPromoStatus("applied");
-  }
-
-  async function handleRemovePromoCode() {
-    if (result.type !== "success") return;
-    await result.checkout.removePromotionCode();
-    setPromoCode("");
-    setPromoStatus("idle");
-    setPromoError(null);
-  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -74,47 +46,6 @@ function PaymentForm({ name }: { name: string }) {
       <div>
         <p className="text-sm text-ink-600">Paying deposit for</p>
         <p className="text-base font-medium text-ink-900">{name}</p>
-      </div>
-
-      <div>
-        <label htmlFor="promo-code" className="text-sm text-ink-600">
-          Coupon code
-        </label>
-        <div className="mt-1 flex gap-2">
-          <input
-            id="promo-code"
-            type="text"
-            value={promoCode}
-            onChange={(e) => setPromoCode(e.target.value)}
-            disabled={promoStatus === "applied" || promoStatus === "applying"}
-            placeholder="Enter code"
-            className="w-full rounded-lg border border-sand-200 px-3 py-2 text-sm text-ink-900 disabled:bg-sand-50"
-          />
-          {promoStatus === "applied" ? (
-            <button
-              type="button"
-              onClick={handleRemovePromoCode}
-              className="shrink-0 rounded-lg border border-sand-200 px-4 py-2 text-sm font-medium text-ink-600 hover:bg-sand-50"
-            >
-              Remove
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleApplyPromoCode}
-              disabled={promoStatus === "applying" || !promoCode.trim()}
-              className="shrink-0 rounded-lg border border-sand-200 px-4 py-2 text-sm font-medium text-ink-600 hover:bg-sand-50 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {promoStatus === "applying" ? "Applying…" : "Apply"}
-            </button>
-          )}
-        </div>
-        {promoStatus === "applied" && (
-          <p className="mt-1 text-sm text-green-600">Coupon applied.</p>
-        )}
-        {promoStatus === "error" && promoError && (
-          <p className="mt-1 text-sm text-red-600">{promoError}</p>
-        )}
       </div>
 
       <PaymentElement options={{ wallets: { link: "never" } }} />
