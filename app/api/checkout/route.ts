@@ -1,16 +1,23 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-
-type CheckoutPayload = {
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  preferredDate?: string;
-  bookingId?: number | string;
-};
+import { checkoutSchema, firstIssueMessage } from "@/lib/validation";
+import { isJsonRequest, isSameOriginRequest, rateLimit } from "@/lib/request-security";
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request) || !isJsonRequest(request)) {
+    return NextResponse.json(
+      { ok: false, error: "Request could not be verified. Please try again from the booking form." },
+      { status: 403 },
+    );
+  }
+
+  if (!rateLimit(request, "checkout", { limit: 10, windowMs: 10 * 60 * 1000 })) {
+    return NextResponse.json(
+      { ok: false, error: "Too many checkout attempts. Please wait a few minutes and try again." },
+      { status: 429 },
+    );
+  }
+
   const secretKey = process.env.STRIPE_SECRET_KEY;
   const depositPriceId = process.env.STRIPE_DEPOSIT_PRICE_ID;
 
@@ -21,11 +28,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = (await request.json().catch(() => ({}))) as Partial<CheckoutPayload>;
+  const body = await request.json().catch(() => null);
+  const parsed = checkoutSchema.safeParse(body);
 
-  if (!body.name || !body.phone || !body.email || !body.address) {
+  if (!parsed.success) {
     return NextResponse.json(
-      { ok: false, error: "Please provide your name, phone, email, and address before paying." },
+      { ok: false, error: firstIssueMessage(parsed.error) },
       { status: 400 },
     );
   }
@@ -38,7 +46,7 @@ export async function POST(request: Request) {
       ui_mode: "elements",
       mode: "payment",
       payment_method_types: ["card"],
-      customer_email: body.email,
+      customer_email: parsed.data.email,
       line_items: [
         {
           price: depositPriceId,
@@ -46,11 +54,11 @@ export async function POST(request: Request) {
         },
       ],
       metadata: {
-        name: body.name,
-        phone: body.phone,
-        address: body.address,
-        preferredDate: body.preferredDate || "",
-        bookingId: body.bookingId ? String(body.bookingId) : "",
+        name: parsed.data.name,
+        phone: parsed.data.phone,
+        address: parsed.data.address,
+        preferredDate: parsed.data.preferredDate ?? "",
+        bookingId: parsed.data.bookingId ? String(parsed.data.bookingId) : "",
       },
       return_url: `${origin}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
     });

@@ -1,29 +1,29 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-
-type BookingPayload = {
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  preferredDate?: string;
-  message?: string;
-  agreedToTerms?: boolean;
-};
+import { bookingSchema, firstIssueMessage } from "@/lib/validation";
+import { isJsonRequest, isSameOriginRequest, rateLimit } from "@/lib/request-security";
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as Partial<BookingPayload>;
-
-  if (!body.name || !body.phone || !body.email || !body.address) {
+  if (!isSameOriginRequest(request) || !isJsonRequest(request)) {
     return NextResponse.json(
-      { ok: false, error: "Please fill in your name, phone, email, and address." },
-      { status: 400 },
+      { ok: false, error: "Request could not be verified. Please try again from the booking form." },
+      { status: 403 },
     );
   }
 
-  if (body.agreedToTerms !== true) {
+  if (!rateLimit(request, "booking", { limit: 5, windowMs: 10 * 60 * 1000 })) {
     return NextResponse.json(
-      { ok: false, error: "Please agree to the Terms of Service and related policies before booking." },
+      { ok: false, error: "Too many booking attempts. Please wait a few minutes and try again." },
+      { status: 429 },
+    );
+  }
+
+  const body = await request.json().catch(() => null);
+  const parsed = bookingSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { ok: false, error: firstIssueMessage(parsed.error) },
       { status: 400 },
     );
   }
@@ -34,12 +34,12 @@ export async function POST(request: Request) {
     const { data, error } = await supabase
       .from("bookings")
       .insert({
-        name: body.name,
-        phone: body.phone,
-        email: body.email,
-        address: body.address,
-        preferred_date: body.preferredDate || null,
-        message: body.message || null,
+        name: parsed.data.name,
+        phone: parsed.data.phone,
+        email: parsed.data.email,
+        address: parsed.data.address,
+        preferred_date: parsed.data.preferredDate ?? null,
+        message: parsed.data.message ?? null,
         agreed_to_terms: true,
       })
       .select("id")
