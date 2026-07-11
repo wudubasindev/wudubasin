@@ -7,9 +7,9 @@ export const siteConfig = {
   depositAmount: "$100",
   // TODO: replace with a real pricing model once job cost data exists.
   estimatedTotalPrice: "$1,000",
-  // TODO: confirm the real business contact details before launch.
+  // TODO: confirm the real business email before launch.
   contactEmail: "hello@wudubasin.ca",
-  contactPhone: "(519) 000-0000",
+  contactPhone: "(548) 881-2824",
   // Legal / regulatory details used across Terms, Privacy, Refund, and Waiver pages.
   legalName: "Zubayir Bagzat, operating as WuduBasin",
   businessAddress: "4380 Lismer Lane, London, Ontario",

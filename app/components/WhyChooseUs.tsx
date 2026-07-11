@@ -18,7 +18,7 @@ const reasons = [
     icon: TruckIcon,
     title: "Experienced manufacturing partner",
     description:
-      "14+ years producing bathroom fixtures, with a strong track record of on-time delivery.",
+      "Our sinks come from an established bathroom-fixture manufacturer with a strong track record of on-time delivery.",
   },
   {
     icon: ToolIcon,
